@@ -1,7 +1,5 @@
 package org.whilmarbitoco.Core;
 
-import org.whilmarbitoco.Database.DatabaseConnection;
-
 import java.util.stream.Stream;
 
 public class QueryBuilder<T> extends QueryStreamer<T> {

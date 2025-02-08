@@ -14,15 +14,18 @@ public class EntityMapper<T> {
 
     public List<T> map(ResultSet rs) {
         List<T> results = new ArrayList<>();
+
         try {
             while (rs.next()) {
                 T obj = entityType.getDeclaredConstructor().newInstance();
+
                 for (Field field : entityType.getDeclaredFields()) {
                     field.setAccessible(true);
-                    Object value = rs.getObject(field.getName());
 
+                    Object value = rs.getObject(field.getName());
                     field.set(obj, value);
                 }
+
                 results.add(obj);
             }
         } catch (Exception e) {
@@ -42,7 +45,7 @@ public class EntityMapper<T> {
 
             return stmt;
         } catch (Exception e) {
-            throw new RuntimeException("From Save..................");
+            throw new RuntimeException(e);
         }
     }
 

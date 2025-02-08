@@ -33,5 +33,14 @@ public class QueryStreamer<T> {
         }
     }
 
+    public Stream<T> streamWithField(String sql, Connection conn, Object value) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setObject(1, value);
+            ResultSet rs = stmt.executeQuery();
+            return mapper.map(rs).stream();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

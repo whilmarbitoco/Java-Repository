@@ -1,24 +1,28 @@
 package org.whilmarbitoco;
 
+import org.whilmarbitoco.Models.Product;
 import org.whilmarbitoco.Models.User;
+import org.whilmarbitoco.Repository.ProductRepository;
 import org.whilmarbitoco.Repository.UserRepository;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        UserRepository repo = new UserRepository();
+        ProductRepository prod = new ProductRepository();
 
-//        repo.save(new User("John", "johnny@gmail.com"));
+//        prod.getAll().forEach(product -> System.out.println(product.getProduct() + " " + product.getPrice()));
 
-        repo.getAll().forEach(user -> System.out.println(user.getEmail() + " " + user.getId()));
-        System.out.println();
-        System.out.println(repo.find(1).getEmail());
+//        prod.save(new Product("Guava", 90));
 
-        repo.delete(2);
-        System.out.println();
 
-        repo.getAll().forEach(user -> System.out.println(user.getEmail() + " " + user.getId()));
+//        prod.getAll().forEach(product -> System.out.println(product.getProduct() + " " + product.getPrice()));
+
+        prod.findByField("product", "Orange").forEach(product -> {
+            System.out.println(product.getPrice());
+        });
+//
+//        prod.getAll().forEach(product -> System.out.println(product.getProduct() + " " + product.getPrice()));
 
     }
 
