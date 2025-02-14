@@ -9,21 +9,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ProductRepository prod = new ProductRepository();
+        UserRepository urp = new UserRepository();
 
-//        prod.getAll().forEach(product -> System.out.println(product.getProduct() + " " + product.getPrice()));
-
-//        prod.save(new Product("Guava", 90));
-
-
-//        prod.getAll().forEach(product -> System.out.println(product.getProduct() + " " + product.getPrice()));
-
-        prod.findByField("product", "Orange").forEach(product -> {
-            System.out.println(product.getPrice());
-        });
-//
-//        prod.getAll().forEach(product -> System.out.println(product.getProduct() + " " + product.getPrice()));
-
+       urp.getAll().forEach(user -> System.out.println(user.getEmail()));
     }
 
 

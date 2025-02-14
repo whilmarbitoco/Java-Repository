@@ -17,7 +17,7 @@ public class EntityMapper<T> {
 
         try {
             while (rs.next()) {
-                T obj = entityType.getDeclaredConstructor().newInstance();
+                T obj = this.entityType.getDeclaredConstructor().newInstance();
 
                 for (Field field : entityType.getDeclaredFields()) {
                     field.setAccessible(true);

@@ -1,14 +1,13 @@
 package org.whilmarbitoco.Repository;
 
-import org.whilmarbitoco.Core.Builder;
-import org.whilmarbitoco.Core.EntityMapper;
-import org.whilmarbitoco.Core.QueryStreamer;
-import org.whilmarbitoco.Core.Validator;
+import org.whilmarbitoco.Core.*;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +21,7 @@ abstract public class Repository<T> {
     protected final QueryStreamer<T> streamer;
     protected final Validator<T> validator;
     protected final Class<T> entity;
+    protected final Mapper<T> mapper2;
 
     public Repository(String table, Class<T> entity, Connection conn) {
         this.builder = new Builder(table);
@@ -30,6 +30,7 @@ abstract public class Repository<T> {
         this.validator = new Validator<T>();
         this.entity = entity;
         this.conn = conn;
+        this.mapper2 = new Mapper<>(entity);
     }
 
     public final void save(T entity) {
@@ -53,7 +54,23 @@ abstract public class Repository<T> {
     }
 
     public final Stream<T> getAll() {
-        return streamer.stream(builder.select().toString(), this.conn);
+
+        List<T> entities = new ArrayList<>();
+        String query = builder.select().toString();
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                T obj = mapper2.map(rs);
+                entities.add(obj);
+            }
+
+            return entities.stream();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public final T findById(int id) {
@@ -89,18 +106,15 @@ abstract public class Repository<T> {
     }
 
     public void update(T entity) {
+        if (!validator.validateEntity(entity)) {
+            throw new RuntimeException("All attributes must not be null.");
+        }
+
         String fields = Arrays.stream(entity.getClass().getDeclaredFields())
                 .map(Field::getName)
                 .filter(name -> !name.equals("id"))
                 .collect(Collectors.joining(", "));
 
-        String query = builder.insert(fields).toString();
-
-//        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-//            mapper.map(entity, stmt).execute();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
 }
