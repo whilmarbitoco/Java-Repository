@@ -5,7 +5,13 @@ import java.util.Arrays;
 
 public class Validator<T> {
 
-    public boolean validateEntity(T entity)  {
+    private Class<T> entity;
+
+    public Validator(Class<T> entity) {
+        this.entity = entity;
+    }
+
+    public boolean entitiy(T entity)  {
         Field[] fields = entity.getClass().getDeclaredFields();
 
       try {
@@ -23,12 +29,11 @@ public class Validator<T> {
         return true;
     }
 
-    public String validateField(Class<T> entity, String field) {
+    public String field(String field) {
         return Arrays.stream(entity.getDeclaredFields())
                 .map(Field::getName)
                 .filter(fld -> fld.equals(field))
                 .findFirst().orElse(null);
-
 
     }
 

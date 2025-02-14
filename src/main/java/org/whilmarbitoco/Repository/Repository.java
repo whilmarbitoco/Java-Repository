@@ -22,39 +22,35 @@ abstract public class Repository<T> {
     protected final Validator<T> validator;
     protected final Class<T> entity;
     protected final Mapper<T> mapper2;
+    protected final EntityHelper<T> entityHelper;
 
     public Repository(String table, Class<T> entity, Connection conn) {
         this.builder = new Builder(table);
         this.mapper = new EntityMapper<>(entity);
         this.streamer = new QueryStreamer<>(entity);
-        this.validator = new Validator<T>();
+        this.validator = new Validator<>(entity);
         this.entity = entity;
         this.conn = conn;
         this.mapper2 = new Mapper<>(entity);
+        this.entityHelper = new EntityHelper<>(entity);
     }
 
     public final void save(T entity) {
-
-        if (!validator.validateEntity(entity)) {
-            throw new RuntimeException("All attributes must not be null");
+        if (!validator.entitiy(entity)) {
+            throw new RuntimeException("All attributes must not be null.");
         }
 
-        String fields = Arrays.stream(entity.getClass().getDeclaredFields())
-                .map(Field::getName)
-                .filter(name -> !name.equals("id"))
-                .collect(Collectors.joining(", "));
-
+        String fields = entityHelper.getFields();
         String query = builder.insert(fields).toString();
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            mapper.map(entity, stmt).execute();
+            mapper2.from(entity, stmt).execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public final Stream<T> getAll() {
-
         List<T> entities = new ArrayList<>();
         String query = builder.select().toString();
 
@@ -62,25 +58,39 @@ abstract public class Repository<T> {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                T obj = mapper2.map(rs);
+                T obj = mapper2.to(rs);
                 entities.add(obj);
             }
 
             return entities.stream();
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public final T findById(int id) {
+    public final T findById(int id)  {
+        List<T> tmp = new ArrayList<>();
         String query = builder.select().where("id = ?").toString();
-        return streamer.streamWithId(query, this.conn, id).findFirst().orElse(null);
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                T obj = mapper2.to(rs);
+                tmp.add(obj);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return tmp.stream().findFirst().orElse(null);
     }
 
     public final Stream<T> findByField(String field, Object value) {
 
-        String val = validator.validateField(this.entity, field);
+        String val = validator.field(field);
         if (val == null) {
             throw new RuntimeException();
         }
@@ -106,7 +116,7 @@ abstract public class Repository<T> {
     }
 
     public void update(T entity) {
-        if (!validator.validateEntity(entity)) {
+        if (!validator.entitiy(entity)) {
             throw new RuntimeException("All attributes must not be null.");
         }
 
