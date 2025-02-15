@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 public class Mapper<T> {
 
-    private Class<T> entity;
+    private final Class<T> entity;
 
     public Mapper(Class<T> entity) {
         this.entity = entity;

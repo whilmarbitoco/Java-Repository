@@ -11,15 +11,14 @@ public class Main {
 
         UserRepository urp = new UserRepository();
 
-//       User u = new User("Bo00b", "bobby@gmail.com");
+       User u = new User("Bobbyyyyy", "boby@gmail.com");
 //
 //       urp.save(u);
 
        urp.getAll().forEach(user -> System.out.println(user.getName() + " " + user.getId()));
 
-       User test = urp.findById(1);
 
-        System.out.println(test.getName());
+
     }
 
 

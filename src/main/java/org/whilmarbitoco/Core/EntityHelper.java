@@ -45,4 +45,11 @@ public class EntityHelper<T> {
                 .collect(Collectors.joining(", "));
     }
 
+    public String getFieldForUpdate() {
+        return Arrays.stream(entity.getDeclaredFields())
+                .map(Field::getName)
+                .filter(name -> !name.equals("id"))
+                .collect(Collectors.joining("= ?, "));
+    }
+
 }
