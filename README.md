@@ -1,16 +1,16 @@
-# Java Repository
+# Java Repository 🚀
 
-## Overview
+## Overview 🏗️
 Java Repository is a project designed to abstract database interaction using the Repository Pattern. This project serves as a template for others who want to implement a structured and maintainable data access layer in their Java applications.
 
-## Features
-- Provides a generic repository pattern for database operations.
-- Supports CRUD (Create, Read, Update, Delete) operations.
-- Abstracts database logic from business logic.
-- Works with various database providers.
-- Enhances code reusability and maintainability.
+## Features ✨
+- ✅ Provides a generic repository pattern for database operations.
+- 🔄 Supports CRUD (Create, Read, Update, Delete) operations.
+- 🏛️ Abstracts database logic from business logic.
+- 🔌 Works with various database providers.
+- 📦 Enhances code reusability and maintainability.
 
-## Installation
+## Installation 🛠️
 1. Clone the repository:
    ```sh
    git clone https://github.com/whilmarbitoco/java-repository.git
@@ -24,8 +24,7 @@ Java Repository is a project designed to abstract database interaction using the
    mvn clean install
    ```
    
-
-## Usage
+## Usage 📖
 1. Define an entity class:
    ```java
    public class User {
@@ -52,12 +51,12 @@ Java Repository is a project designed to abstract database interaction using the
    }
    ```
 
-## Contributing
+## Contributing 🤝
 Contributions are welcome! Feel free to fork the repository and submit pull requests.
 
-## License
+## License 📜
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
-For any inquiries, you can reach out to `whlmrbitoco@example.com`.
+## Contact 📧
+For any inquiries, you can reach out to `whlmrbitoco@gmail.com`.
 
