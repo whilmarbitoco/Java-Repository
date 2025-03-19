@@ -7,7 +7,6 @@ Java Repository is a project designed to abstract database interaction using the
 - ✅ Provides a generic repository pattern for database operations.
 - 🔄 Supports CRUD (Create, Read, Update, Delete) operations.
 - 🏛️ Abstracts database logic from business logic.
-- 🔌 Works with various database providers.
 - 📦 Enhances code reusability and maintainability.
 
 ## Installation 🛠️
