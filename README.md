@@ -26,9 +26,15 @@ Java Repository is a project designed to abstract database interaction using the
 ## Usage 📖
 1. Define an entity class:
    ```java
+   @Table(name = "User")
    public class User {
+       @Column(name = "id")
        private Long id;
+
+       @Column(name = "name")
        private String name;
+
+       @Column(name = "email")
        private String email;
        
        // Getters and Setters
