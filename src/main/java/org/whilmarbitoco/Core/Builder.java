@@ -45,7 +45,7 @@ public class Builder {
         query.append("INSERT INTO ").append(tableName).append(" (");
         query.append(String.join(", ", columns));
         query.append(") VALUES (");
-        query.append("?, ".repeat(columns.length)).append("?");
+        query.append("?, ".repeat(columns.length));
         query.append(")");
         return this;
     }
@@ -68,6 +68,5 @@ public class Builder {
         query.append(";");
         return query.toString();
     }
-
 
 }

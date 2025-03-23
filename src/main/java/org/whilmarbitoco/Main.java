@@ -1,24 +1,31 @@
 package org.whilmarbitoco;
 
-import org.whilmarbitoco.Models.Product;
-import org.whilmarbitoco.Models.User;
-import org.whilmarbitoco.Repository.ProductRepository;
-import org.whilmarbitoco.Repository.UserRepository;
+
+import org.whilmarbitoco.app.database.model.User;
+import org.whilmarbitoco.app.repository.UserRepository;
+
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        UserRepository urp = new UserRepository();
+        var userRepository = new UserRepository();
 
-       User u = new User("Bobbyyyyy", "boby@gmail.com");
+
+//        List<User> students = userRepository.all();
 //
-//       urp.save(u);
+//        for (User s : students) {
+//            System.out.println(s.getEmail());
+//            System.out.println(s.getName());
+//            System.out.println(s.getId());
+//            System.out.println("-------------------------");
+//        }
+//
+        System.out.println("============");
+        User user = userRepository.findByID(203).get();
 
-       urp.getAll().forEach(user -> System.out.println(user.getName() + " " + user.getId()));
-
-
-
+        System.out.println(user.getName());
     }
 
 
