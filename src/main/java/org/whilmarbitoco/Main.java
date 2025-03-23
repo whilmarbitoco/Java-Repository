@@ -4,7 +4,9 @@ package org.whilmarbitoco;
 import org.whilmarbitoco.app.database.model.User;
 import org.whilmarbitoco.app.repository.UserRepository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
@@ -12,20 +14,12 @@ public class Main {
 
         var userRepository = new UserRepository();
 
+        List<User> test = userRepository.findWhere("name", "=", "test");
 
-//        List<User> students = userRepository.all();
-//
-//        for (User s : students) {
-//            System.out.println(s.getEmail());
-//            System.out.println(s.getName());
-//            System.out.println(s.getId());
-//            System.out.println("-------------------------");
-//        }
-//
-        System.out.println("============");
-        User user = userRepository.findByID(203).get();
+        for (User u : test) {
+            System.out.println(u.getName());
+        }
 
-        System.out.println(user.getName());
     }
 
 

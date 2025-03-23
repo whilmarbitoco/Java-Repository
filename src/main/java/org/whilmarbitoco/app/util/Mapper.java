@@ -1,5 +1,7 @@
 package org.whilmarbitoco.app.util;
 
+import org.whilmarbitoco.app.anotation.Column;
+
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,8 +19,11 @@ public class Mapper<T> {
             T obj = type.getDeclaredConstructor().newInstance();
 
             for (Field field : type.getDeclaredFields()) {
+                Column column = field.getAnnotation(Column.class);
+                if (column == null) continue;
+
                 field.setAccessible(true);
-                Object value = rs.getObject(field.getName());
+                Object value = rs.getObject(column.name());
                 field.set(obj, value);
             }
 
@@ -28,6 +33,15 @@ public class Mapper<T> {
         }
     }
 
+
+    /**
+     * ⚠ Used with caution: This method assumes that all fields are perfectly aligned.
+     * If the column order is mismatched, incorrect data insertion may occur.
+     * <p>
+     * Ensure that column mappings are properly configured to prevent potential vulnerabilities.
+     * </p>
+     * -- The Developer (wb2c0)
+     */
     public PreparedStatement from(T entity, PreparedStatement stmt) {
         try {
             Field[] fields = entity.getClass().getDeclaredFields();

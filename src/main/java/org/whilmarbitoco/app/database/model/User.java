@@ -13,15 +13,17 @@ public class User {
     private int id;
 
     @Column(name = "name")
-    private String name;
+    private String username;
 
     @Column(name = "email")
     private String email;
 
+
+
     public User() {}
 
     public User(String name, String email) {
-        this.name = name;
+        this.username = name;
         this.email = email;
     }
 
@@ -34,11 +36,11 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.username = name;
     }
 
     public String getEmail() {

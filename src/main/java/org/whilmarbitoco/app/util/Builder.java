@@ -36,6 +36,22 @@ public class Builder {
         return this;
     }
 
+    public Builder delete(String tableName) {
+        query.setLength(0);
+        query.append("DELETE FROM ");
+        query.append(tableName);
+        return this;
+    }
+
+    public Builder update(String tableName, List<String> columns) {
+        query.setLength(0);
+        query.append("UPDATE ");
+        query.append(tableName);
+        query.append(" SET ");
+        query.append(String.join(" = ?, ", columns)).append(" = ?");
+        return this;
+    }
+
 
     public String build() {
         query.append(";");
