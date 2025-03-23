@@ -66,7 +66,7 @@ public class Entity<T> {
         }
     }
 
-    public void validate(String column) {
+    public void isValidColumn(String column) {
         try {
             Field[] fields = type.getDeclaredFields();
 
@@ -79,5 +79,12 @@ public class Entity<T> {
         } catch (Exception err) {
             throw new RuntimeException("[Entity.java] Something went wrong. INFO:: " + err.getMessage());
         }
+    }
+
+    public void isValidCondition(String condition) {
+         List<String> conditions = List.of("=", "!=", "<", ">", "<=", ">=");
+
+         if (!conditions.contains(condition))
+             throw new RuntimeException("[Repository] Invalid Condition:: " + condition);
     }
 }

@@ -82,19 +82,12 @@ public class Repository<T> {
         }
     }
 
-    /**
-     * ⚠ Used with caution: This method constructs a SQL query dynamically, which may lead to potential SQL injection
-     * vulnerabilities if not properly handled. Ensure that the input is validated and sanitized before use.
-     * <p>
-     * Always prefer using parameterized queries and avoid direct string concatenation with user input.
-     * Or write your own method according to your needs.
-     * </p>
-     * -- The Developer (wb2c0)
-     */
-    public List<T> findWhere(String column, String condition, Object value) {
-        entityManager.validate(column);
-        String query = builder.select(entityManager.getTable()).where(column + " " + condition + " ?").build();
 
+    public List<T> findWhere(String column, String condition, Object value) {
+        entityManager.isValidColumn(column);
+        entityManager.isValidCondition(condition);
+
+        String query = builder.select(entityManager.getTable()).where(column + " " + condition + " ?").build();
         List<T> result = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
