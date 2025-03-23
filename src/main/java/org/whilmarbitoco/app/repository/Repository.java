@@ -1,14 +1,11 @@
 package org.whilmarbitoco.app.repository;
 
 
-import org.whilmarbitoco.app.anotation.Primary;
-import org.whilmarbitoco.app.anotation.Table;
 import org.whilmarbitoco.app.database.connection.DBConnection;
 import org.whilmarbitoco.app.util.Builder;
 import org.whilmarbitoco.app.util.Entity;
 import org.whilmarbitoco.app.util.Mapper;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,7 +66,6 @@ public class Repository<T> {
         if (primaryKey.isEmpty()) throw new RuntimeException("[Repository] Empty primary key for " + entityManager.getTable());
         String query = builder.select(entityManager.getTable()).where(primaryKey.get() + " = ?").build();
 
-        System.out.println(query);
         List<T> result = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
