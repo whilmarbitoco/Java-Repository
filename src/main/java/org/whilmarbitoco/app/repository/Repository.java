@@ -23,13 +23,12 @@ public class Repository<T> {
     protected Builder builder;
     protected Mapper<T> mapper;
 
-    private Class<T> type;
+
 
     public Repository(Class<T> type) {
         this.entityManager = new Entity<>(type);
         this.builder = new Builder();
         this.mapper = new Mapper<>(type);
-        this.type = type;
     }
 
 
