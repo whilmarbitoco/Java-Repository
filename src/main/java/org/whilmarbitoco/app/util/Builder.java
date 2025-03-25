@@ -36,6 +36,13 @@ public class Builder {
         return this;
     }
 
+
+    public Builder like(String str) {
+        query.append(" LIKE ");
+        query.append(str);
+        return this;
+    }
+
     public Builder delete(String tableName) {
         query.setLength(0);
         query.append("DELETE FROM ");

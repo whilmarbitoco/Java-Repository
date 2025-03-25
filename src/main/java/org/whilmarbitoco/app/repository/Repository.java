@@ -37,7 +37,10 @@ public class Repository<T> {
         String query = builder.insert(entityManager.getTable(), entityManager.getColumns()).build();
 
         try(PreparedStatement stmt = connection.prepareStatement(query)) {
-            mapper.from(entity, stmt).execute();
+
+            PreparedStatement test = mapper.from(entity, stmt);
+            System.out.println("QUERY:: " + test.toString());
+            test.execute();
         } catch (SQLException err) {
            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
@@ -48,6 +51,7 @@ public class Repository<T> {
         List<T> result = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            System.out.println("QUERY:: " + stmt.toString());
             ResultSet res = stmt.executeQuery();
 
             while (res.next()) {
@@ -70,6 +74,7 @@ public class Repository<T> {
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, id);
+            System.out.println("QUERY:: " + stmt.toString());
             ResultSet res = stmt.executeQuery();
 
             while (res.next()) {
@@ -92,6 +97,28 @@ public class Repository<T> {
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, value);
+            System.out.println("QUERY:: " + stmt.toString());
+            ResultSet res = stmt.executeQuery();
+
+            while (res.next()) {
+                result.add(mapper.to(res));
+            }
+
+            return result;
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
+    public List<T> findLike(String column, Object value) {
+        entityManager.isValidColumn(column);
+
+        String query = builder.select(entityManager.getTable()).where(column).like("?").build();
+        List<T> result = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setObject(1, "%" + value + "%");
+            System.out.println("QUERY:: " + stmt.toString());
             ResultSet res = stmt.executeQuery();
 
             while (res.next()) {
@@ -113,7 +140,9 @@ public class Repository<T> {
                 .where(primaryKey.get() + " = " + entityManager.getPrimaryKeyValue(entity)).build();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            mapper.from(entity, stmt).execute();
+            PreparedStatement test = mapper.from(entity, stmt);
+            System.out.println("QUERY:: " + test.toString());
+            test.execute();
         } catch (SQLException e) {
             throw new RuntimeException("[Repository] " + e.getMessage());
 
@@ -130,6 +159,7 @@ public class Repository<T> {
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, id);
+            System.out.println("QUERY:: " + stmt.toString());
             stmt.execute();
 
         } catch (SQLException err) {
