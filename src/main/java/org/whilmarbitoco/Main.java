@@ -14,9 +14,6 @@ public class Main {
 
         BirdRepository birdRepo = new BirdRepository();
 
-       birdRepo.findLike("species", "a").forEach(e -> {
-           System.out.println(e.getSpecies());
-       });
 
     }
 }

@@ -5,6 +5,7 @@ import org.whilmarbitoco.app.database.connection.DBConnection;
 import org.whilmarbitoco.app.util.Builder;
 import org.whilmarbitoco.app.util.Entity;
 import org.whilmarbitoco.app.util.Mapper;
+import org.whilmarbitoco.app.util.QueryResult;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,7 +38,6 @@ public class Repository<T> {
         String query = builder.insert(entityManager.getTable(), entityManager.getColumns()).build();
 
         try(PreparedStatement stmt = connection.prepareStatement(query)) {
-
             PreparedStatement test = mapper.from(entity, stmt);
             System.out.println("QUERY:: " + test.toString());
             test.execute();
@@ -48,17 +48,9 @@ public class Repository<T> {
 
     public List<T> findAll() {
         String query = builder.select(entityManager.getTable()).build();
-        List<T> result = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            System.out.println("QUERY:: " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
-
-            while (res.next()) {
-                result.add(mapper.to(res));
-            }
-
-            return result;
+            return executeQuery(stmt).list();
         } catch (SQLException err) {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
@@ -70,18 +62,9 @@ public class Repository<T> {
         if (primaryKey.isEmpty()) throw new RuntimeException("[Repository] Empty primary key for " + entityManager.getTable());
         String query = builder.select(entityManager.getTable()).where(primaryKey.get() + " = ?").build();
 
-        List<T> result = new ArrayList<>();
-
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, id);
-            System.out.println("QUERY:: " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
-
-            while (res.next()) {
-                result.add(mapper.to(res));
-            }
-
-            return Optional.of(result.getFirst());
+            return Optional.ofNullable(executeQuery(stmt).firstResult());
         } catch (SQLException err) {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
@@ -93,18 +76,10 @@ public class Repository<T> {
         entityManager.isValidCondition(condition);
 
         String query = builder.select(entityManager.getTable()).where(column + " " + condition + " ?").build();
-        List<T> result = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, value);
-            System.out.println("QUERY:: " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
-
-            while (res.next()) {
-                result.add(mapper.to(res));
-            }
-
-            return result;
+           return executeQuery(stmt).list();
         } catch (SQLException err) {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
@@ -114,18 +89,10 @@ public class Repository<T> {
         entityManager.isValidColumn(column);
 
         String query = builder.select(entityManager.getTable()).where(column).like("?").build();
-        List<T> result = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, "%" + value + "%");
-            System.out.println("QUERY:: " + stmt.toString());
-            ResultSet res = stmt.executeQuery();
-
-            while (res.next()) {
-                result.add(mapper.to(res));
-            }
-
-            return result;
+            return executeQuery(stmt).list();
         } catch (SQLException err) {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
@@ -145,10 +112,7 @@ public class Repository<T> {
             test.execute();
         } catch (SQLException e) {
             throw new RuntimeException("[Repository] " + e.getMessage());
-
-
         }
-
     }
 
     public void delete(int id) {
@@ -166,4 +130,22 @@ public class Repository<T> {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
     }
+
+    protected QueryResult<T> executeQuery(PreparedStatement stmt) {
+        try {
+            List<T> result = new ArrayList<>();
+
+            System.out.println("QUERY:: " + stmt.toString());
+            ResultSet res = stmt.executeQuery();
+
+            while (res.next()) {
+                result.add(mapper.to(res));
+            }
+
+            return new QueryResult<T>(result);
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] Failed to execute due to -> " + err.getMessage());
+        }
+    }
+
 }
