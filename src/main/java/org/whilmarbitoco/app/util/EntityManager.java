@@ -1,8 +1,6 @@
 package org.whilmarbitoco.app.util;
 
-import org.whilmarbitoco.app.anotation.Column;
-import org.whilmarbitoco.app.anotation.Primary;
-import org.whilmarbitoco.app.anotation.Table;
+import org.whilmarbitoco.app.database.anotation.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -10,19 +8,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class Entity<T> {
+public class EntityManager<T> {
 
-    private Class<T> type;
+    private final Class<T> type;
 
-    public Entity(Class<T> type) {
+
+    public EntityManager(Class<T> type) {
         this.type = type;
     }
 
 
     public final List<String> getColumns() {
-        return Arrays.stream(type.getDeclaredFields())
-                .filter(field -> field.getAnnotation(Primary.class) == null)
-                .map(field -> field.getAnnotation(Column.class).name()).toList();
+        List<String> attributes = new ArrayList<>();
+
+        for (Field field : type.getDeclaredFields()) {
+            if (field.getAnnotation(Primary.class) != null) continue;
+
+            Column col = field.getAnnotation(Column.class);
+            if (col != null) attributes.add(col.name());
+        }
+
+        return attributes;
     }
 
     public final String getTable() {
@@ -33,6 +39,17 @@ public class Entity<T> {
         return Arrays.stream(type.getDeclaredFields())
                 .filter(field -> field.getAnnotation(Primary.class) != null)
                 .map(Field::getName).findFirst();
+
+
+    }
+
+    private Field findPrimaryField(Class<?> clazz) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Primary.class)) {
+                return field;
+            }
+        }
+        throw new RuntimeException("No @Primary field found in related entity: " + clazz.getName());
     }
 
     public Object getPrimaryKeyValue(T entity) {
@@ -87,4 +104,5 @@ public class Entity<T> {
          if (!conditions.contains(condition))
              throw new RuntimeException("[Repository] Invalid Condition:: " + condition);
     }
+
 }

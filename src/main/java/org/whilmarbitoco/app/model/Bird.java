@@ -1,8 +1,8 @@
-package org.whilmarbitoco.app.database.model;
+package org.whilmarbitoco.app.model;
 
-import org.whilmarbitoco.app.anotation.Column;
-import org.whilmarbitoco.app.anotation.Primary;
-import org.whilmarbitoco.app.anotation.Table;
+import org.whilmarbitoco.app.database.anotation.Column;
+import org.whilmarbitoco.app.database.anotation.Primary;
+import org.whilmarbitoco.app.database.anotation.Table;
 
 
 @Table(name = "Bird")

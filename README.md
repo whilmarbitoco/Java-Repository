@@ -30,7 +30,7 @@ Java Repository is a project designed to abstract database interaction using the
    ```java
    package org.whilmarbitoco.app.model;
 
-   import org.whilmarbitoco.app.anotation.*;
+   import org.whilmarbitoco.app.database.anotation.*;
 
    @Table(name = "User")
    public class User {
@@ -63,7 +63,7 @@ Java Repository is a project designed to abstract database interaction using the
    ```
 2. Create a repository class:
    ```java
-   package org.whilmarbitoco.app.repository;
+   package org.whilmarbitoco.app.database.repository;
 
    import org.whilmarbitoco.app.model.User;
 

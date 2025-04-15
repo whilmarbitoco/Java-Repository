@@ -1,4 +1,4 @@
-package org.whilmarbitoco.app.anotation;
+package org.whilmarbitoco.app.database.anotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

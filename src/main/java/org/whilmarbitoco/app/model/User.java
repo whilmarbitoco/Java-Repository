@@ -1,9 +1,9 @@
-package org.whilmarbitoco.app.database.model;
+package org.whilmarbitoco.app.model;
 
 
-import org.whilmarbitoco.app.anotation.Column;
-import org.whilmarbitoco.app.anotation.Primary;
-import org.whilmarbitoco.app.anotation.Table;
+import org.whilmarbitoco.app.database.anotation.*;
+
+import java.util.List;
 
 @Table(name = "User")
 public class User {
@@ -18,6 +18,8 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "email")
+    private String roleID;
 
 
     public User() {}
@@ -26,6 +28,7 @@ public class User {
         this.username = name;
         this.email = email;
     }
+
 
     public int getId() {
         return id;
@@ -49,5 +52,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public String getRoleID() {
+        return roleID;
+    }
+
+    public void setRoleID(String roleID) {
+        this.roleID = roleID;
     }
 }

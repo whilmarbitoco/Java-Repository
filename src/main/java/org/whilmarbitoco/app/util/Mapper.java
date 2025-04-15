@@ -1,6 +1,7 @@
 package org.whilmarbitoco.app.util;
 
-import org.whilmarbitoco.app.anotation.Column;
+import org.whilmarbitoco.app.database.anotation.Column;
+import org.whilmarbitoco.app.database.anotation.Primary;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -8,13 +9,14 @@ import java.sql.ResultSet;
 
 public class Mapper<T> {
 
-    private Class<T> type;
+    private final Class<T> type;
 
     public Mapper(Class<T> type) {
         this.type = type;
+
     }
 
-    public T to(ResultSet rs) {
+    public T toEntity(ResultSet rs) {
         try {
             T obj = type.getDeclaredConstructor().newInstance();
 
@@ -33,22 +35,19 @@ public class Mapper<T> {
         }
     }
 
-
-    /**
-     * ⚠ Used with caution: This method assumes that all fields are perfectly aligned.
-     * If the column order is mismatched, incorrect data insertion may occur.
-     * <p>
-     * Ensure that column mappings are properly configured to prevent potential vulnerabilities.
-     * </p>
-     * -- The Developer (wb2c0)
-     */
-    public PreparedStatement from(T entity, PreparedStatement stmt) {
+    public PreparedStatement fromEntity(T entity, PreparedStatement stmt) {
         try {
             Field[] fields = entity.getClass().getDeclaredFields();
 
-            for (int i = 1; i < fields.length; i++) {
-                fields[i].setAccessible(true);
-                stmt.setObject(i, fields[i].get(entity));
+            for (int i = 0; i < fields.length; i++) {
+                Primary primary = fields[i].getAnnotation(Primary.class);
+                if (primary != null) continue;
+
+                Column column = fields[i].getAnnotation(Column.class);
+                if (column != null) {
+                    fields[i].setAccessible(true);
+                    stmt.setObject(i, fields[i].get(entity));
+                }
             }
 
             return stmt;
@@ -56,5 +55,7 @@ public class Mapper<T> {
             throw new RuntimeException("[Mapper] " + e);
         }
     }
+
+
 
 }

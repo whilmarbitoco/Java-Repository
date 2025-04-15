@@ -2,17 +2,7 @@ package org.whilmarbitoco.app.util;
 
 import java.util.List;
 
-public class QueryResult<T> {
-
-    private final List<T> list;
-
-    public QueryResult(List<T> list) {
-        this.list = list;
-    }
-
-    public List<T> list() {
-        return list;
-    }
+public record QueryResult<T>(List<T> list) {
 
     public T firstResult() {
         if (this.list == null || this.list.isEmpty()) return null;

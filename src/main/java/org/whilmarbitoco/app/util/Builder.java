@@ -16,6 +16,7 @@ public class Builder {
         return this;
     }
 
+
     public Builder select(String tableName) {
         query.setLength(0);
         query.append("SELECT * FROM ").append(tableName);

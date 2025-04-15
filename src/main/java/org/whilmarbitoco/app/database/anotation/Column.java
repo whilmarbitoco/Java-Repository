@@ -1,4 +1,4 @@
-package org.whilmarbitoco.app.anotation;
+package org.whilmarbitoco.app.database.anotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Primary {
+public @interface Column {
+    String name();
 }
