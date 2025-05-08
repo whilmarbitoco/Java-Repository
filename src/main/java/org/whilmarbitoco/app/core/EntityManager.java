@@ -1,6 +1,6 @@
-package org.whilmarbitoco.app.util;
+package org.whilmarbitoco.app.core;
 
-import org.whilmarbitoco.app.database.anotation.*;
+import org.whilmarbitoco.app.core.anotation.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

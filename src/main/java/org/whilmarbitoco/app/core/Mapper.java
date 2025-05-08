@@ -1,7 +1,7 @@
-package org.whilmarbitoco.app.util;
+package org.whilmarbitoco.app.core;
 
-import org.whilmarbitoco.app.database.anotation.Column;
-import org.whilmarbitoco.app.database.anotation.Primary;
+import org.whilmarbitoco.app.core.anotation.Column;
+import org.whilmarbitoco.app.core.anotation.Primary;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;

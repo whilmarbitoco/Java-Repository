@@ -1,10 +1,6 @@
-package org.whilmarbitoco.app.database.repository;
+package org.whilmarbitoco.app.core;
 
-
-import org.whilmarbitoco.app.database.connection.DBConnection;
-import org.whilmarbitoco.app.util.Builder;
-import org.whilmarbitoco.app.util.EntityManager;
-import org.whilmarbitoco.app.util.Mapper;
+import org.whilmarbitoco.app.database.DBConnection;
 import org.whilmarbitoco.app.util.QueryResult;
 
 import java.sql.Connection;
@@ -15,9 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Repository<T> {
 
-    private final Connection connection = DBConnection.getConnection();
+public abstract class Repository<T> {
+
+    protected final Connection connection = DBConnection.getConnection();
+
 
     protected EntityManager<T> entityManager;
     protected Builder builder;
@@ -74,7 +72,36 @@ public class Repository<T> {
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, value);
-           return executeQuery(stmt).list();
+            return executeQuery(stmt).list();
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
+    public List<T> rawWhere(String condition, Object... value) {
+        String query = builder.select(tableName).where(condition).build();
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            for (int i = 0; i < value.length; i++) {
+                stmt.setObject(i + 1, value[i]);
+            }
+
+            return executeQuery(stmt).list();
+
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
+    public List<T> Raw(String query, Object... value) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            for (int i = 0; i < value.length; i++) {
+                stmt.setObject(i + 1, value[i]);
+            }
+
+            return executeQuery(stmt).list();
+
         } catch (SQLException err) {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
         }
@@ -125,6 +152,65 @@ public class Repository<T> {
         }
     }
 
+    public void deleteWhere(String condition, Object... values) {
+        String query = builder.delete(tableName).where(condition).build();
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            for (int i = 0; i < values.length; i++) {
+                stmt.setObject(i + 1, values[i]);
+            }
+            System.out.println("QUERY:: " + stmt.toString());
+            stmt.execute();
+
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
+    public void deleteAll() {
+        String query = builder.delete(tableName).build();
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            System.out.println("QUERY:: " + stmt.toString());
+            stmt.execute();
+
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
+    public int max() {
+        Optional<String> key = entityManager.getPrimaryKey();
+        if (key.isEmpty())
+            throw new RuntimeException("[Repository] Empty primary key for " + entityManager.getTable());
+
+        String query = builder.max(key.get(), tableName).build();
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+
+            return 0;
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
+    public int count() {
+        String query = builder.count(tableName).build();
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+
+            return 0;
+        } catch (SQLException err) {
+            throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
+        }
+    }
+
     protected QueryResult<T> executeQuery(PreparedStatement stmt) {
         try {
             List<T> result = new ArrayList<>();
@@ -136,9 +222,9 @@ public class Repository<T> {
                 result.add(mapper.toEntity(res));
             }
 
-            return new QueryResult<T>(result);
+            return new QueryResult<>(result);
         } catch (SQLException err) {
-            throw new RuntimeException("[Repository] Failed to execute due to -> " + err.getMessage());
+            throw new RuntimeException("[Repository] Failed to execute on table["+tableName+ "] due to -> " + err.getMessage());
         }
     }
 

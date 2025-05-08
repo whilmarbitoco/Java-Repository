@@ -1,9 +1,7 @@
 package org.whilmarbitoco.app.model;
 
 
-import org.whilmarbitoco.app.database.anotation.*;
-
-import java.util.List;
+import org.whilmarbitoco.app.core.anotation.*;
 
 @Table(name = "User")
 public class User {

@@ -1,4 +1,4 @@
-package org.whilmarbitoco.app.database.connection;
+package org.whilmarbitoco.app.database;
 
 import java.io.FileInputStream;
 import java.io.IOException;
