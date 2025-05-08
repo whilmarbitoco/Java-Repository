@@ -16,9 +16,6 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "email")
-    private String roleID;
-
 
     public User() {}
 
@@ -52,12 +49,4 @@ public class User {
         this.email = email;
     }
 
-
-    public String getRoleID() {
-        return roleID;
-    }
-
-    public void setRoleID(String roleID) {
-        this.roleID = roleID;
-    }
 }

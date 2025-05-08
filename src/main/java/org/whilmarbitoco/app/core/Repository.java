@@ -215,7 +215,9 @@ public abstract class Repository<T> {
         try {
             List<T> result = new ArrayList<>();
 
-            System.out.println("QUERY:: " + stmt.toString());
+            if (Config.debug()) {
+                System.out.println("QUERY:: " + stmt.toString());
+            }
             ResultSet res = stmt.executeQuery();
 
             while (res.next()) {
@@ -231,7 +233,9 @@ public abstract class Repository<T> {
     protected void execute(T entity, String query) {
         try(PreparedStatement stmt = connection.prepareStatement(query)) {
             PreparedStatement pstmt = mapper.fromEntity(entity, stmt);
-            System.out.println("QUERY:: " + pstmt.toString());
+            if (Config.debug()) {
+                System.out.println("QUERY:: " + pstmt.toString());
+            }
             pstmt.execute();
         } catch (SQLException err) {
             throw new RuntimeException("[Repository] SQL Error:: " + err.getMessage());
